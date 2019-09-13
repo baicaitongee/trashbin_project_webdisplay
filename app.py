@@ -2,7 +2,7 @@
 from importlib import import_module
 import os
 from flask import Flask, render_template, Response, jsonify
-
+import sqlite_test
 # import camera driver
 if os.environ.get('CAMERA'):
     Camera = import_module('camera_' + os.environ['CAMERA']).Camera
@@ -19,7 +19,7 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     """Video streaming home page."""
-    rootdir = r".\static\pic_history"
+    rootdir = r"./static/pic_history"
     filelist = os.listdir(rootdir)  # 列出该目录下的所有文件名
     filelist = filelist[-7:]  # 显示最后n张图片，n为里面的数值
     # for f in filelist:
@@ -34,8 +34,9 @@ def login():
 def shuaxin():  # shuaxin函数实现获取数据库数据和实现刷新
     context = {"data1": 1,   # 赋值给context
                "data2": 2}
+    context=list(sqlite_test.query_trash())
 
-    context=[1, 2, 3, 4]   # 大类
+    # 大类
     context1 = [1, 2, 3, 5,1,1,1]  # 小类
     return jsonify(context,context1)  # 返回数值到页面 ，里面有几个数便嵌套几个[],现在返回页面就变成[[1, 2, 3, 4],[5, 2, 3, 5]]
 
@@ -63,4 +64,4 @@ def video_feed():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', threaded=True)
+    app.run(host='192.168.43.106', port=5001,threaded=True)
